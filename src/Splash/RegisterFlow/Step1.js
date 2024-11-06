@@ -4,25 +4,32 @@ import Background from "../../components/Background";
 import {global_styles} from '../../../styles';
 import { useEffect, useState } from "react";
 
+
+
 const RegisterStep1 = ({ navigation }) => {
 
     const [userChosen, chooseUser] = useState(false);
     const [ownerChosen, chooseOwner] = useState(false);
-    
+
+    const UserTypeOption = () => {
+        return (
+            <View style={userChosen ? [styles.row_item, global_styles.secondary_color] : [styles.row_item, global_styles.primary_color]} onTouchEnd={() => {if(!userChosen){chooseUser(true); chooseOwner(false)}}}>
+                <View style={[styles.circle]}>
+
+                </View>
+                <Text style={[global_styles.bold_text, styles.text, styles.item_header]}>Charger User</Text>
+                <Text style={[global_styles.text, styles.text, styles.item_text]}>I want to view EV chargers near me and use them.</Text>
+            </View>
+        );
+    }
     return (
         <Background>
             <View style={[styles.center]}>
                 <View style={[styles.row_container]}>
-                    <View style={userChosen ? [styles.row_item, global_styles.secondary_color] : [styles.row_item, global_styles.primary_color]} onTouchEnd={() => {if(!userChosen){chooseUser(true); chooseOwner(false)}}}>
-                        <View style={[styles.circle]}>
-
-                        </View>
-                        <Text style={[global_styles.bold_text, styles.text, styles.item_header]}>Charger User</Text>
-                        <Text style={[global_styles.text, styles.text, styles.item_text]}>I want to view EV chargers near me and use them.</Text>
-                    </View>
+                    <UserTypeOption />
                     <View style={ownerChosen ? [styles.row_item, global_styles.secondary_color] : [styles.row_item, global_styles.primary_color]} onTouchEnd={() => {if(!ownerChosen){chooseOwner(true); chooseUser(false)}}}>
                         <View style={[styles.circle]}>
-                            
+
                         </View>
                         <Text style={[global_styles.bold_text, styles.text, styles.item_header]}>Charger Owner</Text>
                         <Text style={[global_styles.text, styles.text, styles.item_text]}>I own an EV charger and want to allow other users to use it.</Text>
