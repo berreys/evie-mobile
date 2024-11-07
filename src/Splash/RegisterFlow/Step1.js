@@ -10,36 +10,68 @@ const RegisterStep1 = ({ navigation }) => {
 
     const [userChosen, chooseUser] = useState(false);
     const [ownerChosen, chooseOwner] = useState(false);
+    const [canContinue, setCanContinue] = useState(false);
+    const [hideError, setHideError] = useState(true);
+    
+    useEffect(() => {
+        // User can continue to next screen if one of the options has been chosen
+        setCanContinue(userChosen || ownerChosen);
+        // If error is being shown, hide it when an option is chosen
+        if(!hideError){
+            setHideError(userChosen || ownerChosen);
+        }
+    }, [userChosen, ownerChosen]);
 
-    const UserTypeOption = () => {
+    const UserTypeOption = ({headerText, descriptionText, switchVar, onPress}) => {
         return (
-            <View style={userChosen ? [styles.row_item, global_styles.secondary_color] : [styles.row_item, global_styles.primary_color]} onTouchEnd={() => {if(!userChosen){chooseUser(true); chooseOwner(false)}}}>
+            <View style={switchVar ? [styles.row_item, global_styles.secondary_color] : [styles.row_item, global_styles.primary_color]} onTouchEnd={onPress}>
                 <View style={[styles.circle]}>
 
                 </View>
-                <Text style={[global_styles.bold_text, styles.text, styles.item_header]}>Charger User</Text>
-                <Text style={[global_styles.text, styles.text, styles.item_text]}>I want to view EV chargers near me and use them.</Text>
+                <Text style={[global_styles.bold_text, styles.text, styles.item_header]}>{headerText}</Text>
+                <Text style={[global_styles.text, styles.text, styles.item_text]}>{descriptionText}</Text>
             </View>
         );
     }
+
+    const ErrorMessage = () => {
+        if(hideError) return null;
+        return(
+            <View style={[styles.error_message_container]}>
+                <Text style={[global_styles.bold_text, styles.error_message]}>Select an option to continue.</Text>
+            </View>
+        );
+    }
+
+    const handleContinue = () => {
+        if(canContinue) navigation.navigate('RegisterStep2');
+        else setHideError(false);
+    }
+
     return (
         <Background>
             <View style={[styles.center]}>
                 <View style={[styles.row_container]}>
-                    <UserTypeOption />
-                    <View style={ownerChosen ? [styles.row_item, global_styles.secondary_color] : [styles.row_item, global_styles.primary_color]} onTouchEnd={() => {if(!ownerChosen){chooseOwner(true); chooseUser(false)}}}>
-                        <View style={[styles.circle]}>
-
-                        </View>
-                        <Text style={[global_styles.bold_text, styles.text, styles.item_header]}>Charger Owner</Text>
-                        <Text style={[global_styles.text, styles.text, styles.item_text]}>I own an EV charger and want to allow other users to use it.</Text>
-                    </View>
+                    <UserTypeOption 
+                        headerText="Charger User" 
+                        descriptionText="I want to view EV chargers near me and use them." 
+                        switchVar={userChosen} 
+                        onPress={() => {if(!userChosen){chooseUser(true); chooseOwner(false)}}} 
+                    />
+                    <UserTypeOption 
+                        headerText="Charger Owner" 
+                        descriptionText="I own an EV charger and want to allow other users to use it." 
+                        switchVar={ownerChosen} 
+                        onPress={() => {if(!ownerChosen){chooseOwner(true); chooseUser(false)}}} 
+                    />
                 </View>
+                <ErrorMessage />
                 <View style={[styles.row_container]}>
+                    
                     <TouchableOpacity style={[global_styles.secondary_color, styles.button]} onPress={() => navigation.replace('LogIn')}>
                         <Text style={[styles.button_text]}>Cancel</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[global_styles.primary_color, styles.button]} onPress={() => navigation.navigate('RegisterStep2')}>
+                    <TouchableOpacity style={[global_styles.primary_color, styles.button]} onPress={handleContinue}>
                         <Text style={[styles.button_text]}>Continue</Text>
                     </TouchableOpacity>
                 </View>
@@ -107,6 +139,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 5,
         top: 5
+    },
+    error_message: {
+        color: '#D73100',
+        fontSize: 15
+    },
+    error_message_container: {
+        position: 'absolute',
+        top: '55%'
     }
 })
 

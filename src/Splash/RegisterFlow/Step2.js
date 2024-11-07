@@ -1,15 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { TouchableOpacity, Text, TextInput, View, StyleSheet } from 'react-native';
 import Background from "../../components/Background";
 import {global_styles} from '../../../styles';
 
 const RegisterStep2 = ({ navigation }) => {
-    
+    const [firstName, setFirstName] = useState("");
+
+    useEffect(() => {
+        console.log(firstName);
+    }, [firstName]);
+
     return (
         <Background>
             <View style={[styles.center]}>
                 <View style={[styles.center_container]}>
-                    <TextInput placeholder="First Name" placeholderTextColor={'#ffffff77'} style={[styles.input]}></TextInput>
+                    <TextInput placeholder="First Name" placeholderTextColor={'#ffffff77'} style={[styles.input]} onChangeText={(e) => setFirstName(e)}></TextInput>
                     <TextInput placeholder="Last Name" placeholderTextColor={'#ffffff77'} style={[styles.input]}></TextInput>
                     <TextInput placeholder="Email" keyboardType="email-address" autoCapitalize="none" autoCorrect={false} placeholderTextColor={'#ffffff77'} style={[styles.input]}></TextInput>
                     <TextInput placeholder="Username" placeholderTextColor={'#ffffff77'} style={[styles.input]}></TextInput>
