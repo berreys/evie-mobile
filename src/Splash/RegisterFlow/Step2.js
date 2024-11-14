@@ -12,6 +12,42 @@ const RegisterStep2 = ({ navigation }) => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
+    const [hideError, setHideError] = useState(true);
+
+    function allFieldsPopulated() {
+        return(
+            firstName &&
+            lastName &&
+            email &&
+            username &&
+            password &&
+            confirmPassword
+        )
+    }
+    function doPasswordsMatch() {
+        return password === confirmPassword;
+    }
+    function isUsernameAvailable() {
+        return username !== "used";
+        // TODO: call backend to ensure available username
+    }
+
+    const handleSubmit = async () => {
+        if(!allFieldsPopulated()) {
+            setHideError(false);
+            return;
+        }
+        if(!doPasswordsMatch()) {
+            setHideError(false);
+            return;
+        }
+        if(!isUsernameAvailable()) {
+            setHideError(false);
+            return;
+        }
+        navigation.replace('LoggedIn');
+    }
+
     return (
         <Background>
             <View style={[styles.center]}>
@@ -26,7 +62,7 @@ const RegisterStep2 = ({ navigation }) => {
                         <TouchableOpacity style={[global_styles.secondary_color, styles.button]} onPress={() => navigation.pop()}>
                             <Text style={[styles.button_text]}>Back</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[global_styles.primary_color, styles.button]} onPress={() => navigation.replace('LoggedIn')}>
+                        <TouchableOpacity style={[global_styles.primary_color, styles.button]} onPress={handleSubmit}>
                             <Text style={[styles.button_text]}>Continue</Text>
                         </TouchableOpacity>
                     </View>

@@ -5,6 +5,7 @@ import Background from '../components/Background';
 import { global_styles } from '../../styles';
 
 const LogInScreen = ({ navigation }) => {
+    console.log("in LogInScreen")
     const handleLogin = async () => {
       await AsyncStorage.setItem('userToken', 'abc123');  // Simulate login by setting a token
       navigation.replace('LoggedIn');  // Navigate to Home after login
@@ -12,7 +13,7 @@ const LogInScreen = ({ navigation }) => {
     const handleRegister = async () => {
       navigation.replace('Register');
     }
-  
+
     return (
       <Background>
         <View style={[styles.center_container]}>
@@ -27,7 +28,7 @@ const LogInScreen = ({ navigation }) => {
             <Text style={styles.text}>NO ACCOUNT YET? CREATE ONE NOW</Text>
           </TouchableOpacity>
           <Text style={[global_styles.bold_text, styles.text, styles.text_account_option_1]}>- OR -</Text>
-          <Text style={[global_styles.text, styles.text, styles.text_account_option_2]}>Sign in with</Text>          
+          <Text style={[global_styles.text, styles.text, styles.text_account_option_2]}>Sign in with</Text>
           <View style={[styles.row_container]}>
             <View style={[styles.image_background, styles.row_item]} onTouchEnd={() => console.log("Google")}>
               <Image source={require('../../assets/Google_Logo.png')} style={[styles.image]}></Image>
