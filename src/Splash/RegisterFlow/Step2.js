@@ -6,21 +6,38 @@ import {global_styles} from '../../../styles';
 const RegisterStep2 = ({ navigation }) => {
     const placeHolderTextColor = '#ffffff77';
     const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [hideError, setHideError] = useState(true);
 
     useEffect(() => {
-        console.log(firstName);
-    }, [firstName]);
+        if(password.length === 0 && confirmPassword.length === 0) return;
+        setHideError(password === confirmPassword)
+    }, [password, confirmPassword]);
+
+    const ErrorMessage = ({message}) => {
+        if(hideError) return null;
+        return(
+            <View style={[styles.error_message_container]}>
+                <Text style={[global_styles.bold_text, styles.error_message]}>{message}</Text>
+            </View>
+        );
+    }
 
     return (
         <Background>
             <View style={[styles.center]}>
                 <View style={[styles.center_container]}>
                     <TextInput placeholder="First Name"         placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setFirstName(e)}></TextInput>
-                    <TextInput placeholder="Last Name"          placeholderTextColor={placeHolderTextColor} style={[styles.input]}></TextInput>
-                    <TextInput placeholder="Email"              placeholderTextColor={placeHolderTextColor} style={[styles.input]} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} ></TextInput>
-                    <TextInput placeholder="Username"           placeholderTextColor={placeHolderTextColor} style={[styles.input]}></TextInput>
-                    <TextInput placeholder="Password"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} secureTextEntry={true} ></TextInput>
-                    <TextInput placeholder="Confirm Password"   placeholderTextColor={placeHolderTextColor} style={[styles.input]} secureTextEntry={true} ></TextInput>
+                    <TextInput placeholder="Last Name"          placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setLastName(e)}></TextInput>
+                    <TextInput placeholder="Email"              placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setEmail(e)} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} ></TextInput>
+                    <TextInput placeholder="Username"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setUsername(e)}></TextInput>
+                    <TextInput placeholder="Password"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setPassword(e)} secureTextEntry={true} ></TextInput>
+                    <TextInput placeholder="Confirm Password"   placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setConfirmPassword(e)} secureTextEntry={true} ></TextInput>
+                    <ErrorMessage message={"Passwords don't match."}/>
                     <View style={[styles.row_container]}>
                         <TouchableOpacity style={[global_styles.secondary_color, styles.button]} onPress={() => navigation.pop()}>
                             <Text style={[styles.button_text]}>Back</Text>
@@ -114,6 +131,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 5,
         top: 5
+    },
+    error_message: {
+        color: '#D73100',
+        fontSize: 15
+    },
+    error_message_container: {
+        position: 'absolute',
+        top: '80%'
     }
 })
 
