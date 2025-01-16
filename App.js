@@ -25,6 +25,7 @@ export default function App() {
     const [fontsLoaded, setFontsLoaded] = useState(false);
 
     useEffect(() => {
+      console.log("In app.js useeffect")
       loadFonts().then(() => setFontsLoaded(true));
     }, []);
 

@@ -3,6 +3,7 @@ import { TouchableOpacity, Text, TextInput, View, StyleSheet } from 'react-nativ
 import Background from "../../components/Background";
 import {global_styles} from '../../../styles';
 import { useEffect, useState } from "react";
+import FloatingErrorMessage from "../../components/FloatingErrorMessage";
 
 
 
@@ -12,7 +13,7 @@ const RegisterStep1 = ({ navigation }) => {
     const [ownerChosen, chooseOwner] = useState(false);
     const [canContinue, setCanContinue] = useState(false);
     const [hideError, setHideError] = useState(true);
-    
+
     useEffect(() => {
         // User can continue to next screen if one of the options has been chosen
         setCanContinue(userChosen || ownerChosen);
@@ -34,15 +35,6 @@ const RegisterStep1 = ({ navigation }) => {
         );
     }
 
-    const ErrorMessage = () => {
-        if(hideError) return null;
-        return(
-            <View style={[styles.error_message_container]}>
-                <Text style={[global_styles.bold_text, styles.error_message]}>Select an option to continue.</Text>
-            </View>
-        );
-    }
-
     const handleContinue = () => {
         if(canContinue) navigation.navigate('RegisterStep2');
         else setHideError(false);
@@ -52,22 +44,22 @@ const RegisterStep1 = ({ navigation }) => {
         <Background>
             <View style={[styles.center]}>
                 <View style={[styles.row_container]}>
-                    <UserTypeOption 
-                        headerText="Charger User" 
-                        descriptionText="I want to view EV chargers near me and use them." 
-                        switchVar={userChosen} 
-                        onPress={() => {if(!userChosen){chooseUser(true); chooseOwner(false)}}} 
+                    <UserTypeOption
+                        headerText="Charger User"
+                        descriptionText="I want to view EV chargers near me and use them."
+                        switchVar={userChosen}
+                        onPress={() => {if(!userChosen){chooseUser(true); chooseOwner(false)}}}
                     />
-                    <UserTypeOption 
-                        headerText="Charger Owner" 
-                        descriptionText="I own an EV charger and want to allow other users to use it." 
-                        switchVar={ownerChosen} 
-                        onPress={() => {if(!ownerChosen){chooseOwner(true); chooseUser(false)}}} 
+                    <UserTypeOption
+                        headerText="Charger Owner"
+                        descriptionText="I own an EV charger and want to allow other users to use it."
+                        switchVar={ownerChosen}
+                        onPress={() => {if(!ownerChosen){chooseOwner(true); chooseUser(false)}}}
                     />
                 </View>
-                <ErrorMessage />
+                <FloatingErrorMessage hideError={hideError} msg={"Select an option to continue."} percentFromTop={"55%"}/>
                 <View style={[styles.row_container]}>
-                    
+
                     <TouchableOpacity style={[global_styles.secondary_color, styles.button]} onPress={() => navigation.replace('LogIn')}>
                         <Text style={[styles.button_text]}>Cancel</Text>
                     </TouchableOpacity>

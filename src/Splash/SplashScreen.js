@@ -4,7 +4,7 @@ import { Button, Text, View, ActivityIndicator } from 'react-native';
 
 const SplashScreen = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(true);
-  
+
     useEffect(() => {
       const checkLoginStatus = async () => {
         const userToken = await AsyncStorage.getItem('userToken');  // Fetch token
@@ -15,10 +15,10 @@ const SplashScreen = ({ navigation }) => {
         }
         setIsLoading(false);
       };
-      
+
       checkLoginStatus();
     }, [navigation]);
-  
+
     if (isLoading) {
       return (
         <View>
@@ -26,7 +26,7 @@ const SplashScreen = ({ navigation }) => {
         </View>
       );
     }
-  
+
     return null; // Don't display anything while checking login state
   }
 

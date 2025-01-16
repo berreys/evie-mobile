@@ -11,38 +11,58 @@ const RegisterStep2 = ({ navigation }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+
     const [hideError, setHideError] = useState(true);
 
-    useEffect(() => {
-        if(password.length === 0 && confirmPassword.length === 0) return;
-        setHideError(password === confirmPassword)
-    }, [password, confirmPassword]);
-
-    const ErrorMessage = ({message}) => {
-        if(hideError) return null;
+    function allFieldsPopulated() {
         return(
-            <View style={[styles.error_message_container]}>
-                <Text style={[global_styles.bold_text, styles.error_message]}>{message}</Text>
-            </View>
-        );
+            firstName &&
+            lastName &&
+            email &&
+            username &&
+            password &&
+            confirmPassword
+        )
+    }
+    function doPasswordsMatch() {
+        return password === confirmPassword;
+    }
+    function isUsernameAvailable() {
+        return username !== "used";
+        // TODO: call backend to ensure available username
+    }
+
+    const handleSubmit = async () => {
+        if(!allFieldsPopulated()) {
+            setHideError(false);
+            return;
+        }
+        if(!doPasswordsMatch()) {
+            setHideError(false);
+            return;
+        }
+        if(!isUsernameAvailable()) {
+            setHideError(false);
+            return;
+        }
+        navigation.replace('LoggedIn');
     }
 
     return (
         <Background>
             <View style={[styles.center]}>
                 <View style={[styles.center_container]}>
-                    <TextInput placeholder="First Name"         placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setFirstName(e)}></TextInput>
-                    <TextInput placeholder="Last Name"          placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setLastName(e)}></TextInput>
-                    <TextInput placeholder="Email"              placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setEmail(e)} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} ></TextInput>
-                    <TextInput placeholder="Username"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setUsername(e)}></TextInput>
-                    <TextInput placeholder="Password"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setPassword(e)} secureTextEntry={true} ></TextInput>
-                    <TextInput placeholder="Confirm Password"   placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setConfirmPassword(e)} secureTextEntry={true} ></TextInput>
-                    <ErrorMessage message={"Passwords don't match."}/>
+                    <TextInput placeholder="First Name"         placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setFirstName(e)}        ></TextInput>
+                    <TextInput placeholder="Last Name"          placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setLastName(e)}         ></TextInput>
+                    <TextInput placeholder="Email"              placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setEmail(e)}            keyboardType="email-address" autoCapitalize="none" autoCorrect={false} ></TextInput>
+                    <TextInput placeholder="Username"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setUsername(e)}         ></TextInput>
+                    <TextInput placeholder="Password"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setPassword(e)}         secureTextEntry={true} ></TextInput>
+                    <TextInput placeholder="Confirm Password"   placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setConfirmPassword(e)}  secureTextEntry={true} ></TextInput>
                     <View style={[styles.row_container]}>
                         <TouchableOpacity style={[global_styles.secondary_color, styles.button]} onPress={() => navigation.pop()}>
                             <Text style={[styles.button_text]}>Back</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[global_styles.primary_color, styles.button]} onPress={() => navigation.navigate('RegisterStep3')}>
+                        <TouchableOpacity style={[global_styles.primary_color, styles.button]} onPress={handleSubmit}>
                             <Text style={[styles.button_text]}>Continue</Text>
                         </TouchableOpacity>
                     </View>
@@ -84,7 +104,7 @@ const styles = StyleSheet.create({
         // borderColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
-  
+
     },
     row_item: {
         margin: 10,
