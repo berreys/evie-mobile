@@ -13,21 +13,12 @@
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
-<<<<<<< HEAD
     "expo": "^52.0.25",
     "expo-font": "~13.0.3",
     "expo-linear-gradient": "~14.0.2",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
     "react-native": "0.76.6",
-=======
-    "expo": "^52.0.6",
-    "expo-font": "~12.0.10",
-    "expo-linear-gradient": "~13.0.2",
-    "expo-status-bar": "~1.12.1",
-    "react": "18.2.0",
-    "react-native": "0.74.5",
->>>>>>> ac185718a8d18bedd49acdcf45b10c2a91739037
     "react-native-vector-icons": "^10.2.0"
   },
   "devDependencies": {
