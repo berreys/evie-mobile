@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TouchableOpacity, Text, TextInput, View, StyleSheet } from 'react-native';
 import Background from "../../components/Background";
 import {global_styles} from '../../../styles';
+import FloatingErrorMessage from "../../components/FloatingErrorMessage";
 
 const RegisterStep2 = ({ navigation }) => {
     const placeHolderTextColor = '#ffffff77';
@@ -58,6 +59,7 @@ const RegisterStep2 = ({ navigation }) => {
                     <TextInput placeholder="Username"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setUsername(e)}         ></TextInput>
                     <TextInput placeholder="Password"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setPassword(e)}         secureTextEntry={true} ></TextInput>
                     <TextInput placeholder="Confirm Password"   placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setConfirmPassword(e)}  secureTextEntry={true} ></TextInput>
+                    <FloatingErrorMessage hideError={hideError} msg={"Fill out all fields before continuing."} percentFromTop={"80%"}/>
                     <View style={[styles.row_container]}>
                         <TouchableOpacity style={[global_styles.secondary_color, styles.button]} onPress={() => navigation.pop()}>
                             <Text style={[styles.button_text]}>Back</Text>
