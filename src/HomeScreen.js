@@ -1,12 +1,12 @@
 import { Button, Text, View, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import MapView from 'react-native-maps';
+import MapView, {Marker, Region} from 'react-native-maps';
 import React, {useState, useEffect} from 'react';
 import * as Location from 'expo-location';
 
 const HomeScreen = ({ navigation }) => {
-    const [location, setLocation] = useState(null);
-    const [region, setRegion] = useState(null);
+    const [location, setLocation] = useState();
+    const [region, setRegion] = useState();
     const [locationError, setLocationError] = useState('');
 
     useEffect(() => {
@@ -28,14 +28,28 @@ const HomeScreen = ({ navigation }) => {
         getLocation();
     }, []);
 
+    const markerTest = {
+        lat: location.latitude,
+        long: location.longitude,
+        title: 'Your Location'
+    }
+
     return (
-        // <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        //     <Text>Home Screen here</Text>
-        //     <Button onPress={() => navigation.navigate('Account')} title="Go to account"/>
-        //     <Icon name="rocket" />
-        // </View>
         <View style={{flex:1}}>
-            <MapView style={StyleSheet.absoluteFillObject} showsUserLocation={true} showsMyLocationButton={true} initialRegion={region} />
+            {region ? (
+                <MapView style={StyleSheet.absoluteFillObject} showsUserLocation={true} showsMyLocationButton={true} initialRegion={region}>
+                    {location && (
+                        <Marker
+                            coordinate={{latitude: markerTest.lat, longitude: markerTest.long}}
+                            title={markerTest.title}
+                        />
+                    )}
+                </MapView>
+            ) : (
+                <Text style={{textAlign: 'center', marginTop: 20}}>
+                    {locationError ? locationError : 'Fetching location...'}
+                </Text>
+            )}
         </View>
     );
 }
