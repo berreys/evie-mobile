@@ -1,7 +1,7 @@
 import { Button, Text, View, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MapView, {Marker, Region} from 'react-native-maps';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import * as Location from 'expo-location';
 
 const HomeScreen = ({ navigation }) => {
@@ -9,6 +9,13 @@ const HomeScreen = ({ navigation }) => {
     const [region, setRegion] = useState(null);
     const [locationError, setLocationError] = useState('');
     const [markers, setMarkers] = useState([])
+    const mapRef = useRef();
+
+    const resetRegion = () => {
+        if(mapRef.current){
+            mapRef.current.animateToRegion(region, 1000);
+        }
+    };
 
     useEffect( () => {
         const getLocation = async () => {
@@ -49,49 +56,65 @@ const HomeScreen = ({ navigation }) => {
     } : {}
 
     return (
-        <View style={{flex:1}}>
-            {region ? (
-                <MapView style={StyleSheet.absoluteFillObject} showsUserLocation={true} showsMyLocationButton={true} initialRegion={region}>
-                    <Marker
-                        coordinate={{latitude: markerTest.lat, longitude: markerTest.long}}
-                        title={markerTest.title}
-                    >
-                        <View style={styles.markerContainer}>
-                          {/* Circular icon */}
-                            <View style={styles.markerCircle}>
-                                <Icon name="bolt" size={24} color="green" />
+        <>
+            <View style={styles.mapContainer}>
+                {region ? (
+                    <MapView ref={mapRef} style={[styles.map, StyleSheet.absoluteFillObject]} showsUserLocation={true} showsMyLocationButton={true} region={region}>
+                        <Marker
+                            coordinate={{latitude: markerTest.lat, longitude: markerTest.long}}
+                            title={markerTest.title}
+                        >
+                            <View style={styles.markerContainer}>
+                              {/* Circular icon */}
+                                <View style={styles.markerCircle}>
+                                    <Icon name="bolt" size={24} color="green" />
+                                </View>
+                                {/* Pointer tail */}
+                                <View style={styles.markerTail} />
                             </View>
-                            {/* Pointer tail */}
-                            <View style={styles.markerTail} />
-                        </View>
-                    </Marker>
-                    {markers.length > 0 
-                        ? 
-                        markers.map((m) => 
-                            <Marker key={m.title} coordinate={{latitude: m.lat, longitude: m.long}} title={m.title}>
-                                <View style={styles.markerContainer}>
-                          {/* Circular icon */}
-                            <View style={styles.markerCircle}>
-                                <Icon name="bolt" size={24} color="green" />
+                        </Marker>
+                        {markers.length > 0 
+                            ? 
+                            markers.map((m) => 
+                                <Marker key={m.title} coordinate={{latitude: m.lat, longitude: m.long}} title={m.title}>
+                                    <View style={styles.markerContainer}>
+                              {/* Circular icon */}
+                                <View style={styles.markerCircle}>
+                                    <Icon name="bolt" size={24} color="green" />
+                                </View>
+                                {/* Pointer tail */}
+                                <View style={styles.markerTail} />
                             </View>
-                            {/* Pointer tail */}
-                            <View style={styles.markerTail} />
-                        </View>
-                            </Marker>
-                        ) 
-                        :
-                        <></>}
-                </MapView>
-            ) : (
-                <Text style={{textAlign: 'center', marginTop: 20}}>
-                    {locationError ? locationError : 'Fetching location...'}
-                </Text>
-            )}
-        </View>
+                                </Marker>
+                            ) 
+                            :
+                            <></>}
+                    </MapView>
+                ) : (
+                    <Text style={{textAlign: 'center', marginTop: 20}}>
+                        {locationError ? locationError : 'Fetching location...'}
+                    </Text>
+                )}
+            </View>
+            
+            <View style={styles.bottomContainer}>
+                <Button title="Go to my location" onPress={resetRegion} />
+            </View>
+        </>
     );
 }
 
 const styles = StyleSheet.create({
+    bottomContainer: {
+        width: '100%',
+        height: '30%'
+    },
+    mapContainer: {
+        flex: 1
+    },
+    map: {
+        flex: 1
+    },
     markerContainer: {
       alignItems: 'center',
     },
