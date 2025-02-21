@@ -8,10 +8,10 @@ const HomeScreen = ({ navigation }) => {
     const [location, setLocation] = useState(null);
     const [region, setRegion] = useState(null);
     const [locationError, setLocationError] = useState('');
+    const [markers, setMarkers] = useState([])
 
     useEffect( () => {
         const getLocation = async () => {
-            console.log("HERE");
             let {status} = await Location.requestForegroundPermissionsAsync();
             if(status !== 'granted'){
                 console.log('No location permission');
@@ -28,6 +28,17 @@ const HomeScreen = ({ navigation }) => {
                 });
             }
         };
+        const getMarkers = async () => {
+            let markers = [];
+            // TODO: call backend and get all (maybe nearby?) chargers to display 
+            markers.push({
+                lat: 40.7128,
+                long: -74.0060,
+                title: 'New York'
+            });
+            setMarkers(markers);
+        };
+        getMarkers();
         getLocation();
     }, []);
 
@@ -44,7 +55,32 @@ const HomeScreen = ({ navigation }) => {
                     <Marker
                         coordinate={{latitude: markerTest.lat, longitude: markerTest.long}}
                         title={markerTest.title}
-                    />
+                    >
+                        <View style={styles.markerContainer}>
+                          {/* Circular icon */}
+                            <View style={styles.markerCircle}>
+                                <Icon name="bolt" size={24} color="green" />
+                            </View>
+                            {/* Pointer tail */}
+                            <View style={styles.markerTail} />
+                        </View>
+                    </Marker>
+                    {markers.length > 0 
+                        ? 
+                        markers.map((m) => 
+                            <Marker key={m.title} coordinate={{latitude: m.lat, longitude: m.long}} title={m.title}>
+                                <View style={styles.markerContainer}>
+                          {/* Circular icon */}
+                            <View style={styles.markerCircle}>
+                                <Icon name="bolt" size={24} color="green" />
+                            </View>
+                            {/* Pointer tail */}
+                            <View style={styles.markerTail} />
+                        </View>
+                            </Marker>
+                        ) 
+                        :
+                        <></>}
                 </MapView>
             ) : (
                 <Text style={{textAlign: 'center', marginTop: 20}}>
@@ -54,5 +90,33 @@ const HomeScreen = ({ navigation }) => {
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    markerContainer: {
+      alignItems: 'center',
+    },
+    markerCircle: {
+      backgroundColor: 'white',
+      padding: 12,
+      borderRadius: 25,
+      borderWidth: 2,
+      borderColor: 'black',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.3,
+      shadowRadius: 2,
+    },
+    markerTail: {
+      width: 0,
+      height: 0,
+      borderLeftWidth: 15,
+      borderRightWidth: 15,
+      borderTopWidth: 12,
+      borderLeftColor: 'transparent',
+      borderRightColor: 'transparent',
+      borderTopColor: 'black', // Matches border of the circle
+      marginTop: -7, // Adjust to align with the circle
+      zIndex:-1
+    },
+  });
 
 export default HomeScreen;
