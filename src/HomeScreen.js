@@ -16,6 +16,9 @@ const HomeScreen = ({ navigation }) => {
             mapRef.current.animateToRegion(region, 1000);
         }
     };
+    const goToAccount = () => {
+        navigation.navigate('Account');
+    };
 
     useEffect( () => {
         const getLocation = async () => {
@@ -99,6 +102,7 @@ const HomeScreen = ({ navigation }) => {
             
             <View style={styles.bottomContainer}>
                 <Button title="Go to my location" onPress={resetRegion} />
+                <Button title="Go to my account" onPress={goToAccount} />
             </View>
         </>
     );
