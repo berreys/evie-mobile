@@ -49,13 +49,16 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         // borderWidth: 1,
         padding: 5,
-        width: '100%'
+        width: '100%',
+        paddingLeft: 24
     },
     text: {
-        fontFamily: 'Nexa-Light'
+        fontFamily: 'Nexa-Light',
+        fontSize: 16
     },
     header: {
-        fontFamily: 'Nexa-Heavy'
+        fontFamily: 'Nexa-Heavy',
+        fontSize: 24
     }
 })
 
