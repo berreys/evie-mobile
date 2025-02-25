@@ -1,6 +1,8 @@
 import { Button, Text, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AccountInfo from './components/AccountInfo';
+import Background from './components/Background';
+import BillingInfo from './components/BillingInfo';
 
 const SettingsScreen = ({ navigation }) => {
     async function handleLogout() {
@@ -8,11 +10,13 @@ const SettingsScreen = ({ navigation }) => {
         navigation.replace('LogIn');
     }
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <AccountInfo />
-            <Text>Settings Screen</Text>
-            <Button onPress={handleLogout} title="Logout" />
-        </View>
+        <Background>
+            <View style={{marginTop: '15%', width: '100%'}}>
+                <AccountInfo username='sberrey'/>
+                <BillingInfo username='sberrey'/>
+                <Button onPress={handleLogout} title='Log Out' />
+            </View>
+        </Background>
     );
 }
 

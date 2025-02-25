@@ -7,7 +7,7 @@ const Background = ({
                     children
                 }) => {
     return (
-        <LinearGradient colors={colors} style={[styles.background]}>
+        <LinearGradient colors={colors} style={[styles.background, style]}>
             {children}
         </LinearGradient>
     );
