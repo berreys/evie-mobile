@@ -36,7 +36,7 @@ const RegisterStep1 = ({ navigation }) => {
     }
 
     const handleContinue = () => {
-        if(canContinue) navigation.navigate('RegisterStep2');
+        if(canContinue) navigation.navigate('RegisterStep2', {chargerOwner: ownerChosen, vehicleOwner: userChosen});
         else setHideError(false);
     }
 

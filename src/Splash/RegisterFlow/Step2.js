@@ -3,6 +3,8 @@ import { TouchableOpacity, Text, TextInput, View, StyleSheet } from 'react-nativ
 import Background from "../../components/Background";
 import {global_styles} from '../../../styles';
 import FloatingErrorMessage from "../../components/FloatingErrorMessage";
+import { useRoute } from "@react-navigation/native";
+import { API_URL } from '@env';
 
 const RegisterStep2 = ({ navigation }) => {
     const placeHolderTextColor = '#ffffff77';
@@ -14,6 +16,10 @@ const RegisterStep2 = ({ navigation }) => {
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const [hideError, setHideError] = useState(true);
+    const [errorMsg, setErrorMsg] = useState('');
+
+    const route = useRoute();
+    const { chargerOwner, vehicleOwner } = route.params;
 
     function allFieldsPopulated() {
         return(
@@ -33,19 +39,54 @@ const RegisterStep2 = ({ navigation }) => {
         // TODO: call backend to ensure available username
     }
 
+    const registerUser = async (userData) => {
+        try {
+          const response = await fetch(API_URL + '/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+          });
+      
+          const data = await response.json();
+      
+          if (!response.ok) {
+            throw new Error(data.message || 'Failed to register');
+          }
+      
+          return data;
+        } catch (error) {
+          console.error('Error registering user:', error.message);
+          throw error;
+        }
+    };
+
     const handleSubmit = async () => {
         if(!allFieldsPopulated()) {
             setHideError(false);
+            setErrorMsg('Fill out all fields before continuing.');
             return;
         }
         if(!doPasswordsMatch()) {
             setHideError(false);
+            setErrorMsg('Passwords do not match.');
             return;
         }
         if(!isUsernameAvailable()) {
             setHideError(false);
+            setErrorMsg('This username is not available.');
             return;
         }
+        await registerUser({
+            "firstName": "Sam",
+            "lastName": "Berrey",
+            "email": "test1@gmail.com",
+            "username": "test1",
+            "password": "test",
+            "chargerOwner": true,
+            "vehicleOwner": false
+        })
         navigation.replace('LoggedIn');
     }
 
@@ -57,9 +98,9 @@ const RegisterStep2 = ({ navigation }) => {
                     <TextInput placeholder="Last Name"          placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setLastName(e)}         ></TextInput>
                     <TextInput placeholder="Email"              placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setEmail(e)}            keyboardType="email-address" autoCapitalize="none" autoCorrect={false} ></TextInput>
                     <TextInput placeholder="Username"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setUsername(e)}         ></TextInput>
-                    <TextInput placeholder="Password"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setPassword(e)}         secureTextEntry={true} ></TextInput>
-                    <TextInput placeholder="Confirm Password"   placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setConfirmPassword(e)}  secureTextEntry={true} ></TextInput>
-                    <FloatingErrorMessage hideError={hideError} msg={"Fill out all fields before continuing."} percentFromTop={"80%"}/>
+                    <TextInput placeholder="Password"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setPassword(e)}         contextMenuHidden={true} textContentType="oneTimeCode"  secureTextEntry={true} ></TextInput>
+                    <TextInput placeholder="Confirm Password"   placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setConfirmPassword(e)}  contextMenuHidden={true} textContentType="oneTimeCode" secureTextEntry={true} ></TextInput>
+                    <FloatingErrorMessage hideError={hideError} msg={errorMsg} percentFromTop={"80%"}/>
                     <View style={[styles.row_container]}>
                         <TouchableOpacity style={[global_styles.secondary_color, styles.button]} onPress={() => navigation.pop()}>
                             <Text style={[styles.button_text]}>Back</Text>
