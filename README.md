@@ -27,12 +27,22 @@ If prompted, install `@expo/ngrok` globally
 
 #### 1. Download `Expo Go` App from Play Store or App Store
 
-#### 2. Run the start script
+#### 2. Create a .env file
+
+In the root directory of the project, create a file named ```.env```. The contents should be as follows:
+
+```
+API_URL=http://127.0.0.1:3000
+```
+
+Replace ```127.0.0.1``` with the IP address of the machine running the backend.
+
+#### 3. Run the start script
 ```
 npm run start
 ```
 
-#### 3. Scan the QR code that appears in the terminal
+#### 4. Scan the QR code that appears in the terminal
 
 ## Deploying
 
