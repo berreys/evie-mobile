@@ -6,76 +6,92 @@ import FloatingErrorMessage from "../../components/FloatingErrorMessage";
 import { useRoute } from "@react-navigation/native";
 import { API_URL } from '@env';
 
-const RegisterStep2 = ({ navigation }) => {
+const ChargerOwnerRegistration = ({ navigation }) => {
     const placeHolderTextColor = '#ffffff77';
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [zip, setZip] = useState("");
+    const [state, setState] = useState("");
+    const [city, setCity] = useState("");
+    const [addrLine1, setAddrLine1] = useState("");
+    const [addrLine2, setAddrLine2] = useState("");
 
     const [hideError, setHideError] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
 
     const route = useRoute();
-    const { chargerOwner, vehicleOwner } = route.params;
+    const { firstName, lastName, email, username, password } = route.params;
 
     function allFieldsPopulated() {
         return(
-            firstName &&
-            lastName &&
-            email &&
-            username &&
-            password &&
-            confirmPassword
+            zip &&
+            state &&
+            city &&
+            addrLine1
         )
     }
-    function doPasswordsMatch() {
-        return password === confirmPassword;
-    }
-    function isUsernameAvailable() {
-        return username !== "used";
-        // TODO: call backend to ensure available username
-    }
 
-    const handleContinue = async () => {
+    const registerUser = async (userData) => {
+        console.log(userData)
+        try {
+          const response = await fetch(API_URL + '/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+          });
+      
+          const data = await response.json();
+      
+          if (!response.ok) {
+            throw new Error(data.message || 'Failed to register');
+          }
+      
+          return data;
+        } catch (error) {
+          console.error('Error registering user:', error.message);
+          throw error;
+        }
+    };
+
+    const handleSubmit = async () => {
         if(!allFieldsPopulated()) {
             setHideError(false);
             setErrorMsg('Fill out all fields before continuing.');
             return;
         }
-        if(!doPasswordsMatch()) {
-            setHideError(false);
-            setErrorMsg('Passwords do not match.');
-            return;
-        }
-        if(!isUsernameAvailable()) {
-            setHideError(false);
-            setErrorMsg('This username is not available.');
-            return;
-        }
-        if(chargerOwner) navigation.navigate('ChargerOwnerRegistration', {firstName: firstName, lastName: lastName, email: email, username: username, password: password});
-        else navigation.navigate('CarOwnerRegistration', {firstName: firstName, lastName: lastName, email: email, username: username, password: password});
+        await registerUser({
+            "firstName": firstName,
+            "lastName": lastName,
+            "email": email,
+            "username": username,
+            "password": password,
+            "chargerOwner": true,
+            "vehicleOwner": false,
+            "zip": zip,
+            "state": state,
+            "city": city,
+            "addrLine1": addrLine1,
+            "addrLine2": addrLine2
+        })
+        navigation.replace('LoggedIn');
     }
 
     return (
         <Background>
             <View style={[styles.center]}>
                 <View style={[styles.center_container]}>
-                    <TextInput placeholder="First Name"         placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setFirstName(e)}        ></TextInput>
-                    <TextInput placeholder="Last Name"          placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setLastName(e)}         ></TextInput>
-                    <TextInput placeholder="Email"              placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setEmail(e)}            keyboardType="email-address" autoCapitalize="none" autoCorrect={false} ></TextInput>
-                    <TextInput placeholder="Username"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setUsername(e)}         ></TextInput>
-                    <TextInput placeholder="Password"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setPassword(e)}         contextMenuHidden={true} textContentType="oneTimeCode"  secureTextEntry={true} ></TextInput>
-                    <TextInput placeholder="Confirm Password"   placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setConfirmPassword(e)}  contextMenuHidden={true} textContentType="oneTimeCode" secureTextEntry={true} ></TextInput>
-                    <FloatingErrorMessage hideError={hideError} msg={errorMsg} percentFromTop={"80%"}/>
+                    <TextInput placeholder="Address Line 1"         placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setAddrLine1(e)}                           ></TextInput>
+                    <TextInput placeholder="Address Line 2 (optional)"          placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setAddrLine2(e)}                        ></TextInput>
+                    <TextInput placeholder="City"              placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setCity(e)}                    ></TextInput>
+                    <TextInput placeholder="State"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setState(e)}  ></TextInput>
+                    <TextInput placeholder="Zip Code"           placeholderTextColor={placeHolderTextColor} style={[styles.input]} onChangeText={(e) => setZip(e)}    ></TextInput>
+                    <FloatingErrorMessage hideError={hideError} msg={errorMsg} percentFromTop={"77%"}/>
                     <View style={[styles.row_container]}>
                         <TouchableOpacity style={[global_styles.secondary_color, styles.button]} onPress={() => navigation.pop()}>
                             <Text style={[styles.button_text]}>Back</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[global_styles.primary_color, styles.button]} onPress={handleContinue}>
-                            <Text style={[styles.button_text]}>Continue</Text>
+                        <TouchableOpacity style={[global_styles.primary_color, styles.button]} onPress={handleSubmit}>
+                            <Text style={[styles.button_text]}>Finish</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -174,4 +190,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default RegisterStep2;
+export default ChargerOwnerRegistration;

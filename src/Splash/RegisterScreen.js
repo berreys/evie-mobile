@@ -9,6 +9,7 @@ const RegisterStack = createNativeStackNavigator();
 import RegisterStep1 from './RegisterFlow/Step1';
 import RegisterStep2 from './RegisterFlow/Step2';
 import CarOwnerRegistration from "./RegisterFlow/CarOwnerRegistration";
+import ChargerOwnerRegistration from "./RegisterFlow/ChargerOwnerRegistration";
 
 const RegisterStackScreen = ({navigation}) => {
     return (
@@ -16,6 +17,7 @@ const RegisterStackScreen = ({navigation}) => {
             <RegisterStack.Screen name="RegisterStep1" component={RegisterStep1} options={{ headerShown: false }} />
             <RegisterStack.Screen name="RegisterStep2" component={RegisterStep2} options={{ headerShown: false }} />
             <RegisterStack.Screen name="CarOwnerRegistration" component={CarOwnerRegistration} options={{ headerShown: false }} />
+            <RegisterStack.Screen name="ChargerOwnerRegistration" component={ChargerOwnerRegistration} options={{ headerShown: false }} />
         </RegisterStack.Navigator>
     );
 }
