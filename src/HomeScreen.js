@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MapView, {Marker, Region} from 'react-native-maps';
 import React, {useState, useEffect, useRef} from 'react';
 import * as Location from 'expo-location';
+import {API_URL, GEOCODE_KEY} from '@env';
 
 const HomeScreen = ({ navigation }) => {
     const [location, setLocation] = useState(null);
@@ -16,11 +17,35 @@ const HomeScreen = ({ navigation }) => {
             mapRef.current.animateToRegion(region, 1000);
         }
     };
+
     const goToAccount = () => {
         navigation.navigate('Account');
     };
 
+    const getChargers = async () => {
+        try {
+          const response = await fetch(API_URL + '/getChargers', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          });
+      
+          const chargers = await response.json();
+      
+          if (!response.ok) {
+            throw new Error(chargers.message || 'Failed to get charger data.');
+          }
+      
+          return chargers;
+        } catch (error) {
+          console.error('Error retrieving charger data:', error.message);
+          return [];
+        }
+    }
+
     useEffect( () => {
+        console.log("In useEffect of HomeScreen.js");
         const getLocation = async () => {
             let {status} = await Location.requestForegroundPermissionsAsync();
             if(status !== 'granted'){
@@ -39,43 +64,53 @@ const HomeScreen = ({ navigation }) => {
             }
         };
         const getMarkers = async () => {
-            let markers = [];
-            // TODO: call backend and get all (maybe nearby?) chargers to display 
-            markers.push({
-                lat: 40.7128,
-                long: -74.0060,
-                title: 'New York'
-            });
-            setMarkers(markers);
+            console.log("GOOGLE MAPS API KEY", GEOCODE_KEY);
+            try {
+                console.log("Fetching chargers...");
+                let chargers = await getChargers();
+                console.log(chargers);
+        
+                // Function to geocode an address using Google Maps API
+                const geocodeAddress = async (charger) => {
+                    const address = `${charger.addressLine1}, ${charger.city}, ${charger.state} ${charger.zip}`;
+                    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GEOCODE_KEY}`;
+        
+                    try {
+                        let response = await fetch(url);
+                        let data = await response.json();
+                        
+                        if (data.status === "OK" && data.results.length > 0) {
+                            const { lat, lng } = data.results[0].geometry.location;
+                            return { lat: lat, long: lng, title: address };
+                        } else {
+                            console.warn("Geocoding failed for:", address);
+                            return null;
+                        }
+                    } catch (error) {
+                        console.error("Geocoding error:", error);
+                        return null;
+                    }
+                };
+        
+                // Convert chargers to markers with geocoding
+                let markerPromises = chargers.map(geocodeAddress);
+                let markers = (await Promise.all(markerPromises)).filter(marker => marker !== null);
+        
+                setMarkers(markers);
+            } catch (error) {
+                console.error(error);
+            }
         };
+        
         getMarkers();
         getLocation();
     }, []);
-
-    const markerTest = location ? {
-        lat: location.latitude,
-        long: location.longitude,
-        title: 'Your Location'
-    } : {}
 
     return (
         <>
             <View style={styles.mapContainer}>
                 {region ? (
-                    <MapView ref={mapRef} style={[styles.map, StyleSheet.absoluteFillObject]} showsUserLocation={true} showsMyLocationButton={true} region={region}>
-                        <Marker
-                            coordinate={{latitude: markerTest.lat, longitude: markerTest.long}}
-                            title={markerTest.title}
-                        >
-                            <View style={styles.markerContainer}>
-                              {/* Circular icon */}
-                                <View style={styles.markerCircle}>
-                                    <Icon name="bolt" size={24} color="green" />
-                                </View>
-                                {/* Pointer tail */}
-                                <View style={styles.markerTail} />
-                            </View>
-                        </Marker>
+                    <MapView key={markers.length} ref={mapRef} style={[styles.map, StyleSheet.absoluteFillObject]} showsUserLocation={true} showsMyLocationButton={true} region={region}>
                         {markers.length > 0 
                             ? 
                             markers.map((m) => 

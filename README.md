@@ -35,7 +35,8 @@ In the root directory of the project, create a file named ```.env```. The conten
 API_URL=http://127.0.0.1:3000
 ```
 
-Replace ```127.0.0.1``` with the IP address of the machine running the backend.
+Replace ```127.0.0.1``` with the IP address of the machine running the backend. Find your IP address by running ```ipconfig``` on Windows or ```ipconfig getifaddr en0
+``` on Mac/Linux.
 
 #### 3. Run the start script
 ```
