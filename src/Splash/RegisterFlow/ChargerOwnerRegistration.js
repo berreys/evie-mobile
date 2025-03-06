@@ -48,6 +48,7 @@ const ChargerOwnerRegistration = ({ navigation }) => {
             throw new Error(data.message || 'Failed to register');
           }
           await AsyncStorage.setItem('username', userData.username);  // Simulate login by setting a token
+          await AsyncStorage.setItem('driver', "F");
       
           return data;
         } catch (error) {

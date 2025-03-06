@@ -2,10 +2,11 @@ import {View, Text, StyleSheet} from "react-native";
 import {useEffect, useState} from "react";
 
 const AppointmentInfo = ({data}) => {
+    console.log(data);
 
     return (
         <View style={styles.container}>
-            <Text style={[styles.text]}>{'Name: ' + data.ownerFirstName+ ' ' + data.ownerLastName}</Text>
+            <Text style={[styles.text]}>{'Location: ' + data.addressLine1+ ' ' + data.addressLine2+ ' ' + data.city + ', ' + data.state}</Text>
             <Text style={styles.text}>{'Start: ' + data.startDateTime}</Text>
             <Text style={styles.text}>{'End: ' + data.endDateTime}</Text>
         </View>

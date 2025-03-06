@@ -5,6 +5,7 @@ import {global_styles} from '../../../styles';
 import FloatingErrorMessage from "../../components/FloatingErrorMessage";
 import { useRoute } from "@react-navigation/native";
 import { API_URL } from '@env';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CarOwnerRegistration = ({ navigation }) => {
     const placeHolderTextColor = '#ffffff77';
@@ -74,6 +75,8 @@ const CarOwnerRegistration = ({ navigation }) => {
             "plateNumber": plateNumber,
             "plateState": plateState
         })
+        await AsyncStorage.setItem('username', username);
+        await AsyncStorage.setItem('driver', "T");
         navigation.replace('LoggedIn');
     }
 
