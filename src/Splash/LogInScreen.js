@@ -34,6 +34,7 @@ const LogInScreen = ({ navigation }) => {
             await AsyncStorage.setItem('userToken', 'abc123');  // Simulate login by setting a token
             await AsyncStorage.setItem('username', data.username);
             await AsyncStorage.setItem('driver', data.vehicleOwner ? "T" : "F");
+            console.log(await AsyncStorage.getItem('username'));
             navigation.replace('LoggedIn');  // Navigate to Home after login
         
             return data;

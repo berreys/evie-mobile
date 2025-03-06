@@ -5,6 +5,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import * as Location from 'expo-location';
 import {API_URL, GEOCODE_KEY} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MakeAppointment from './components/MakeAppointment';
 
 const HomeScreen = ({ navigation }) => {
     const [location, setLocation] = useState(null);
@@ -13,6 +14,7 @@ const HomeScreen = ({ navigation }) => {
     const [markers, setMarkers] = useState([])
     const mapRef = useRef();
     const [selectedMarker, setSelectedMarker] = useState(null);
+    const [hideApptComponent, setHideApptComponent] = useState(true);
 
     const resetRegion = () => {
         if(mapRef.current){
@@ -112,7 +114,9 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <>
+            <MakeAppointment chargerData={selectedMarker} hideAppointment={hideApptComponent} setHideAppointment={setHideApptComponent} />
             <View style={styles.mapContainer}>
+                
                 {region ? (
                     <MapView key={markers.length} ref={mapRef} style={[styles.map, StyleSheet.absoluteFillObject]} showsUserLocation={true} showsMyLocationButton={true} region={region}>
                         {markers.length > 0 
@@ -141,7 +145,7 @@ const HomeScreen = ({ navigation }) => {
             
             <View style={styles.bottomContainer}>
                 <Button title="Go to my location" onPress={resetRegion} />
-                {selectedMarker ? <Button title={`Set appointment at ${selectedMarker.title}`} /> : <></>}
+                {selectedMarker ? <Button title={`Set appointment at ${selectedMarker.title}`} onPress={(e) => {setHideApptComponent(false)}} /> : <></>}
             </View>
         </>
     );
