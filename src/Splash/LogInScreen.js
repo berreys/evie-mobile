@@ -4,18 +4,47 @@ import { TouchableOpacity, Text, TextInput, View, Image } from 'react-native';
 import Background from '../components/Background';
 import { global_styles } from '../../styles';
 import React, { useEffect, useState } from "react";
+import FloatingErrorMessage from '../components/FloatingErrorMessage';
+import { API_URL } from '@env';
 
 
 const LogInScreen = ({ navigation }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [hideError, setHideError] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
 
-    console.log("in LogInScreen")
     const handleLogin = async () => {
-        await AsyncStorage.setItem('userToken', 'abc123');  // Simulate login by setting a token
-        await AsyncStorage.setItem('username', username);
-        navigation.replace('LoggedIn');  // Navigate to Home after login
+        fetchBody = {"username" : username, "password" : password};
+        console.log("FETCH BODY", fetchBody);
+        try {
+            const response = await fetch(API_URL + '/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(fetchBody),
+            });
+        
+            const data = await response.json();
+        
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to login');
+            }
+            await AsyncStorage.setItem('userToken', 'abc123');  // Simulate login by setting a token
+            await AsyncStorage.setItem('username', data.username);
+            await AsyncStorage.setItem('driver', data.vehicleOwner ? "T" : "F");
+            navigation.replace('LoggedIn');  // Navigate to Home after login
+        
+            return data;
+        }
+        catch (error) {
+            console.log("Can't log in");
+            setErrorMsg('Not valid credentials');
+            setHideError(false);
+        }
     };
+
     const handleRegister = async () => {
         navigation.replace('Register');
     }
@@ -26,6 +55,7 @@ const LogInScreen = ({ navigation }) => {
                 <Text style={[styles.login_title]}>evie</Text>
                 <TextInput placeholder="Username" placeholderTextColor={'#ffffff77'} style={[styles.input]} onChangeText={(e) => setUsername(e)} />
                 <TextInput placeholder="Password" placeholderTextColor={'#ffffff77'} secureTextEntry={true} style={[styles.input]} onChangeText={(e) => setPassword(e)} autoCorrect={false}/>
+                <FloatingErrorMessage hideError={hideError} msg={errorMsg} percentFromTop={"64%"}/>
                 <Text style={[global_styles.text, styles.recover_password]} onPress={() => console.log("Forgot password")}>Forgot Password?</Text>
                 <TouchableOpacity style={[styles.button, styles.login_button]} onPress={handleLogin}>
                     <Text style={styles.text}>LOGIN</Text>
