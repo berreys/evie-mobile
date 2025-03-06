@@ -12,15 +12,12 @@ const HomeScreen = ({ navigation }) => {
     const [locationError, setLocationError] = useState('');
     const [markers, setMarkers] = useState([])
     const mapRef = useRef();
+    const [selectedMarker, setSelectedMarker] = useState(null);
 
     const resetRegion = () => {
         if(mapRef.current){
             mapRef.current.animateToRegion(region, 1000);
         }
-    };
-
-    const goToAccount = () => {
-        navigation.navigate('Account');
     };
 
     const getChargers = async () => {
@@ -85,7 +82,7 @@ const HomeScreen = ({ navigation }) => {
                         
                         if (data.status === "OK" && data.results.length > 0) {
                             const { lat, lng } = data.results[0].geometry.location;
-                            return { lat: lat, long: lng, title: address };
+                            return { lat: lat, long: lng, title: address, id: charger.id };
                         } else {
                             console.warn("Geocoding failed for:", address);
                             return null;
@@ -109,6 +106,9 @@ const HomeScreen = ({ navigation }) => {
         getMarkers();
         getLocation();
     }, []);
+    useEffect( () => {
+        console.log(selectedMarker);
+    }, [selectedMarker]);
 
     return (
         <>
@@ -118,7 +118,7 @@ const HomeScreen = ({ navigation }) => {
                         {markers.length > 0 
                             ? 
                             markers.map((m) => 
-                                <Marker key={m.title} coordinate={{latitude: m.lat, longitude: m.long}} title={m.title}>
+                                <Marker key={m.title} coordinate={{latitude: m.lat, longitude: m.long}} title={m.title} onPress={(e) => {setSelectedMarker(m)}}>
                                     <View style={styles.markerContainer}>
                               {/* Circular icon */}
                                 <View style={styles.markerCircle}>
@@ -141,7 +141,7 @@ const HomeScreen = ({ navigation }) => {
             
             <View style={styles.bottomContainer}>
                 <Button title="Go to my location" onPress={resetRegion} />
-                <Button title="Go to my account" onPress={goToAccount} />
+                {selectedMarker ? <Button title={`Set appointment at ${selectedMarker.title}`} /> : <></>}
             </View>
         </>
     );
