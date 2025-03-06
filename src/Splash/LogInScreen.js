@@ -3,42 +3,48 @@ import { StyleSheet } from 'react-native';
 import { TouchableOpacity, Text, TextInput, View, Image } from 'react-native';
 import Background from '../components/Background';
 import { global_styles } from '../../styles';
+import React, { useEffect, useState } from "react";
+
 
 const LogInScreen = ({ navigation }) => {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
     console.log("in LogInScreen")
     const handleLogin = async () => {
-      await AsyncStorage.setItem('userToken', 'abc123');  // Simulate login by setting a token
-      navigation.replace('LoggedIn');  // Navigate to Home after login
+        await AsyncStorage.setItem('userToken', 'abc123');  // Simulate login by setting a token
+        await AsyncStorage.setItem('username', username);
+        navigation.replace('LoggedIn');  // Navigate to Home after login
     };
     const handleRegister = async () => {
-      navigation.replace('Register');
+        navigation.replace('Register');
     }
 
     return (
-      <Background>
-        <View style={[styles.center_container]}>
-          <Text style={[styles.login_title]}>evie</Text>
-          <TextInput placeholder="Username" placeholderTextColor={'#ffffff77'} style={[styles.input]}/>
-          <TextInput placeholder="Password" placeholderTextColor={'#ffffff77'} secureTextEntry={true} style={[styles.input]}/>
-          <Text style={[global_styles.text, styles.recover_password]} onPress={() => console.log("Forgot password")}>Forgot Password?</Text>
-          <TouchableOpacity style={[styles.button, styles.login_button]} onPress={handleLogin}>
-            <Text style={styles.text}>LOGIN</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, styles.register_button]} onPress={handleRegister}>
-            <Text style={styles.text}>NO ACCOUNT YET? CREATE ONE NOW</Text>
-          </TouchableOpacity>
-          <Text style={[global_styles.bold_text, styles.text, styles.text_account_option_1]}>- OR -</Text>
-          <Text style={[global_styles.text, styles.text, styles.text_account_option_2]}>Sign in with</Text>
-          <View style={[styles.row_container]}>
-            <View style={[styles.image_background, styles.row_item]} onTouchEnd={() => console.log("Google")}>
-              <Image source={require('../../assets/Google_Logo.png')} style={[styles.image]}></Image>
+        <Background>
+            <View style={[styles.center_container]}>
+                <Text style={[styles.login_title]}>evie</Text>
+                <TextInput placeholder="Username" placeholderTextColor={'#ffffff77'} style={[styles.input]} onChangeText={(e) => setUsername(e)} />
+                <TextInput placeholder="Password" placeholderTextColor={'#ffffff77'} secureTextEntry={true} style={[styles.input]} onChangeText={(e) => setPassword(e)} autoCorrect={false}/>
+                <Text style={[global_styles.text, styles.recover_password]} onPress={() => console.log("Forgot password")}>Forgot Password?</Text>
+                <TouchableOpacity style={[styles.button, styles.login_button]} onPress={handleLogin}>
+                    <Text style={styles.text}>LOGIN</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.button, styles.register_button]} onPress={handleRegister}>
+                    <Text style={styles.text}>NO ACCOUNT YET? CREATE ONE NOW</Text>
+                </TouchableOpacity>
+                <Text style={[global_styles.bold_text, styles.text, styles.text_account_option_1]}>- OR -</Text>
+                <Text style={[global_styles.text, styles.text, styles.text_account_option_2]}>Sign in with</Text>
+                <View style={[styles.row_container]}>
+                    <View style={[styles.image_background, styles.row_item]} onTouchEnd={() => console.log("Google")}>
+                        <Image source={require('../../assets/Google_Logo.png')} style={[styles.image]}></Image>
+                    </View>
+                    <View style={[styles.image_background, styles.row_item]} onTouchEnd={() => console.log("Facebook")}>
+                        <Image source={require('../../assets/Facebook_Logo.png')} style={[styles.image]}></Image>
+                    </View>
+                </View>
             </View>
-            <View style={[styles.image_background, styles.row_item]} onTouchEnd={() => console.log("Facebook")}>
-              <Image source={require('../../assets/Facebook_Logo.png')} style={[styles.image]}></Image>
-            </View>
-          </View>
-        </View>
-      </Background>
+        </Background>
     );
 }
 

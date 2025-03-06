@@ -5,6 +5,8 @@ import {global_styles} from '../../../styles';
 import FloatingErrorMessage from "../../components/FloatingErrorMessage";
 import { useRoute } from "@react-navigation/native";
 import { API_URL } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const ChargerOwnerRegistration = ({ navigation }) => {
     const placeHolderTextColor = '#ffffff77';
@@ -45,6 +47,7 @@ const ChargerOwnerRegistration = ({ navigation }) => {
           if (!response.ok) {
             throw new Error(data.message || 'Failed to register');
           }
+          await AsyncStorage.setItem('username', userData.username);  // Simulate login by setting a token
       
           return data;
         } catch (error) {

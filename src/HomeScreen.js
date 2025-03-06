@@ -4,6 +4,7 @@ import MapView, {Marker, Region} from 'react-native-maps';
 import React, {useState, useEffect, useRef} from 'react';
 import * as Location from 'expo-location';
 import {API_URL, GEOCODE_KEY} from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = ({ navigation }) => {
     const [location, setLocation] = useState(null);
@@ -47,6 +48,9 @@ const HomeScreen = ({ navigation }) => {
     useEffect( () => {
         console.log("In useEffect of HomeScreen.js");
         const getLocation = async () => {
+            const userUsername = await AsyncStorage.getItem('username');
+
+            console.log("Username: " + userUsername);
             let {status} = await Location.requestForegroundPermissionsAsync();
             if(status !== 'granted'){
                 console.log('No location permission');
