@@ -28,7 +28,7 @@ function SettingsStack() {
 function AppointmentsStack() {
     return (
         <Stack.Navigator screenOptions={{headerShown: false}}>
-            <Stack.Screen name="Appointments" component={AppointmentsScreen} />
+            <Stack.Screen name="AppointmentsMain" component={AppointmentsScreen} />
         </Stack.Navigator>
     );
 }
